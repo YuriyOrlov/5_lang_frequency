@@ -22,7 +22,7 @@ def get_most_frequent_words(text):
 
 if __name__ == '__main__':
     if len(argv) is 1 or len(argv) >= 3:
-        print('\nPlease, specify the file for opening. Example: python pprint_json.py alcomarket.json\n')
+        print('\nPlease, specify the file for opening. Example: python lang_frequency.py sh.txt\n')
     else:
         words_list_from_text = load_data(argv[1])
         most_common_words_list = get_most_frequent_words(words_list_from_text)
