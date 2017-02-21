@@ -1,21 +1,12 @@
 # Frequency Analysis of Words
 
-This script takes your file and counts words in it. After that it detects encoding of your file. If this is impossible it will raise an error. Here I use additional library **chardet**, so you have to install it. Next step program detects your language to choose the list of stop-words according to your language. If this is impossible it goes further without using that list. This has been made with the help of  **nltk** library, so it also needed to be installed and all word corpuses have to be dowloaded.
+This script takes your file and counts words in it. Program detects your language to choose the list of stop-words according to your language. If this is impossible it goes further without using that list. This has been made with the help of  **nltk** library, so it also needed to be installed and all word corpuses have to be dowloaded.
 Then it gives back to you list with the ten most frequent words in the text in descending order. 
-
-How to install **chardet** library:
-
-```#!bash
-$pip install chardet
-
-```
-Info about **chardet** lib:
-https://pypi.python.org/pypi/chardet
 
 How to install **nltk** library with words corpus:
 
 ```#!bash
-$pip install nltk && python
+$pip install -r requirements.txt && python
 
 ```
 When **nltk** library will has installed and you are in python interpreter:
@@ -39,7 +30,8 @@ https://ocw.mit.edu/ans7870/6/6.006/s08/lecturenotes/files/t8.shakespeare.txt
 
 ```#!bash
 
-$ python lang_frequency.py <path to file>
+$ python lang_frequency.py <path to file> <number of words to show in result>
+
 The ten most frequent words in the text (in descending order)
 1. thou
 2. thy
