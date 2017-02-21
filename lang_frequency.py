@@ -1,15 +1,22 @@
-from sys import argv
+import argparse
+import sys
+import textwrap
+import re
 from os import path
-import string
 from collections import Counter
 from nltk.corpus import stopwords
-from chardet import detect
 
 
-def detect_encoding(filepath):
-    with open(filepath, 'br') as file:
-        raw_data = file.read()
-    return detect(raw_data)['encoding']
+class MyParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: {}\n'.format(message))
+        self.print_help()
+        sys.exit(2)
+
+    def check_python_version(self):
+        if sys.version_info < (3, 5):
+            self.print_help()
+            raise SystemExit('\nSorry, this code needs Python 3.5 or higher\n')
 
 
 def detect_language_stopwords(list_with_stopwords):
@@ -23,6 +30,29 @@ def detect_language_stopwords(list_with_stopwords):
         return languages_rate
     else:
         return None
+
+
+def create_parser():
+    parser = MyParser(prog='Word Frequency counter', formatter_class=argparse.RawDescriptionHelpFormatter,
+                      description=textwrap.dedent('''\
+                      Script for count words frequency \n
+                      -----------------------------------------------------------------
+                      If you want to stop the program press Ctrl+C.
+                      ------------------------------------------------------------------
+                      This program had been tested on Python 3.5.2.
+                      '''))
+    parser.add_argument('--file', nargs='?',
+                        help='Paste full path to file with text,\
+                              e.g --file /home/user/documents/shakespeare_sonnets.txt\
+                              (default: %(default)s)',
+                        type=str, default=None)
+
+    parser.add_argument('--num_of_words',
+                        help='How many words will be showed in result,\
+                              e.g --num_of_words 5 \
+                              (default: %(default)s)',
+                        type=int, default=10)
+    return parser
 
 
 def detect_language(language_rate_dict):
@@ -40,40 +70,30 @@ def use_stopwords_list(data):
 
 
 def load_data(filepath):
-    possible_encoding = detect_encoding(filepath)
     if not path.exists(filepath):
         return None
-    with open(filepath, 'r', encoding=possible_encoding) as file:
+    with open(filepath, 'r', encoding='utf-8') as file:
         return file.read()
 
 
-def clean_text(raw_file_data):
-        text_without_punctuation = raw_file_data.translate(str.maketrans('', '', string.punctuation))
-        text_without_numbers = text_without_punctuation.translate(str.maketrans('', '', '1234567890'))
-        text_without_spec_signs = text_without_numbers.translate(str.maketrans('', '', '\n\t\r'))
-        text_with_stopwords = text_without_spec_signs.lower().split()
-        words_list_without_stopwords = use_stopwords_list(text_with_stopwords)
-        return words_list_without_stopwords if words_list_without_stopwords else text_with_stopwords
+def clean_text(text_from_file):
+        splitted_text_with_numbers = re.findall('\w+', text_from_file.lower().strip())
+        splitted_text_without_numbers = [word for word in splitted_text_with_numbers if not word.isdigit()]
+        words_list_without_stopwords = use_stopwords_list(splitted_text_without_numbers)
+        return words_list_without_stopwords if words_list_without_stopwords else splitted_text_without_numbers
 
 
-def check_input_arguments(argv):
-    if len(argv) is 1 or len(argv) >= 3:
-        return True
-    else:
-        return None
-
-
-def get_most_frequent_words(text):
-    return Counter(text).most_common(10)
+def get_most_frequent_words(text, number_of_words_to_show=10):
+    return Counter(text).most_common(number_of_words_to_show)
 
 
 if __name__ == '__main__':
-    if check_input_arguments(argv):
-        print('\nPlease, specify the file for opening. Example: python lang_frequency.py test.txt\n')
-    else:
-        load_raw_text = load_data(argv[1])
-        cleaned_text = clean_text(load_raw_text)
-        most_common_words_list = get_most_frequent_words(cleaned_text)
-        print('The ten most frequent words in the text (in descending order)')
-        for num, item in enumerate(most_common_words_list, 1):
-            print('{}. {}'.format(num, item[0]))
+    parser = create_parser()
+    parser.check_python_version()
+    args = parser.parse_args()
+    loaded_text = load_data(args.file)
+    cleaned_text = clean_text(loaded_text)
+    most_common_words_list = get_most_frequent_words(cleaned_text, args.num_of_words)
+    print('\nThe ten most frequent words in the text (in descending order)')
+    for num, item in enumerate(most_common_words_list, 1):
+        print('{}. {}'.format(num, item[0]))
