@@ -19,19 +19,6 @@ class MyParser(argparse.ArgumentParser):
             raise SystemExit('\nSorry, this code needs Python 3.5 or higher\n')
 
 
-def detect_language_stopwords(list_with_stopwords):
-    if stopwords.fileids():
-        languages_rate = dict()
-        for lang in stopwords.fileids():
-            stopwords_set = set(stopwords.words(lang))
-            words_set = set(list_with_stopwords)
-            common_elements = words_set.intersection(stopwords_set)
-            languages_rate[lang] = len(common_elements)
-        return languages_rate
-    else:
-        return None
-
-
 def create_parser():
     parser = MyParser(prog='Word Frequency counter', formatter_class=argparse.RawDescriptionHelpFormatter,
                       description=textwrap.dedent('''\
@@ -59,7 +46,20 @@ def detect_language(language_rate_dict):
     return max(language_rate_dict, key=language_rate_dict.get)
 
 
-def use_stopwords_list(data):
+def detect_language_stopwords(list_with_stopwords):
+    if stopwords.fileids():
+        languages_rate = dict()
+        for filenames in stopwords.fileids():
+            stopwords_set = set(stopwords.words(filenames))
+            words_set = set(list_with_stopwords)
+            common_elements = words_set.intersection(stopwords_set)
+            languages_rate[filenames] = len(common_elements)
+        return languages_rate
+    else:
+        return None
+
+
+def delete_stopwords(data):
     lang_rate = detect_language_stopwords(data)
     language = detect_language(lang_rate)
     lang_stopwords = stopwords.words(language) if lang_rate and language else None
@@ -76,11 +76,11 @@ def load_data(filepath):
         return file.read()
 
 
-def clean_text(text_from_file):
-        splitted_text_with_numbers = re.findall('\w+', text_from_file.lower().strip())
-        splitted_text_without_numbers = [word for word in splitted_text_with_numbers if not word.isdigit()]
-        words_list_without_stopwords = use_stopwords_list(splitted_text_without_numbers)
-        return words_list_without_stopwords if words_list_without_stopwords else splitted_text_without_numbers
+def clean_text(text):
+        words_and_numbers_list = re.findall('\w+', text.lower().strip())
+        words_list = [word for word in words_and_numbers_list if not word.isdigit()]
+        words_list_without_stopwords = delete_stopwords(words_list)
+        return words_list_without_stopwords if words_list_without_stopwords else words_list
 
 
 def get_most_frequent_words(text, number_of_words_to_show=10):
