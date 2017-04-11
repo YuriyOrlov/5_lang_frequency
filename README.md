@@ -1,25 +1,7 @@
 # Frequency Analysis of Words
 
-This script takes your file and counts words in it. Program detects your language to choose the list of stop-words according to your language. If this is impossible it goes further without using that list. This has been made with the help of  **nltk** library, so it also needed to be installed and all word corpuses have to be dowloaded.
-Then it gives back to you list with the ten most frequent words in the text in descending order. 
-
-How to install **nltk** library with words corpus:
-
-```#!bash
-$pip install -r requirements.txt && python
-
-```
-When **nltk** library will has installed and you are in python interpreter:
-
-```
->>> import nltk
->>> nltk.download('all')
-
-```
-ATTENTION: Please, don't try to use GUI interface for package downloading, because it could cause mistakes.
-
-More information about this problem can be found here:
-http://stackoverflow.com/questions/33183618/nltk-data-out-of-date-python-3-4
+This script takes your file and counts words in it. Furthermore, it could delete stopwords from russian language. Words corpus for this function were taken from **nltk** library.
+After work this script will provide you with a list of ten most frequent words in the text in descending order. 
 
 ### Usage example
 
