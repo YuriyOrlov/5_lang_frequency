@@ -1,9 +1,7 @@
-import argparse
-import sys
-import textwrap
 import re
 from os import path
 import collections
+from args_parser import MyParser
 
 
 RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как',
@@ -22,41 +20,6 @@ RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 
                           'много', 'разве', 'три', 'эту', 'моя', 'впрочем', 'хорошо', 'свою', 'этой',
                           'перед', 'иногда', 'лучше', 'чуть', 'том', 'нельзя', 'такой', 'им', 'более',
                           'всегда', 'конечно', 'всю', 'между']
-
-
-class MyParser(argparse.ArgumentParser):
-    def error(self, message):
-        sys.stderr.write('error: {}\n'.format(message))
-        self.print_help()
-        sys.exit(2)
-
-    def check_python_version(self):
-        if sys.version_info < (3, 5):
-            self.print_help()
-            raise SystemExit('\nSorry, this code needs Python 3.5 or higher\n')
-
-
-def create_parser():
-    parser = MyParser(prog='Word Frequency counter', formatter_class=argparse.RawDescriptionHelpFormatter,
-                      description=textwrap.dedent('''\
-                      Script for count words frequency \n
-                      -----------------------------------------------------------------
-                      If you want to stop the program press Ctrl+C.
-                      ------------------------------------------------------------------
-                      This program had been tested on Python 3.5.2.
-                      '''))
-    parser.add_argument('--file', nargs='?',
-                        help='Paste full path to file with text,\
-                              e.g --file /home/user/documents/shakespeare_sonnets.txt\
-                              (default: %(default)s)',
-                        type=str, default=None)
-
-    parser.add_argument('--num_of_words',
-                        help='How many words will be showed in result,\
-                              e.g --num_of_words 5 \
-                              (default: %(default)s)',
-                        type=int, default=10)
-    return parser
 
 
 def load_data(filepath):
@@ -78,7 +41,7 @@ def get_most_frequent_words(text, number_of_words_to_show):
 
 
 if __name__ == '__main__':
-    parser = create_parser()
+    parser = MyParser()
     parser.check_python_version()
     args = parser.parse_args()
     loaded_text = load_data(args.file)
