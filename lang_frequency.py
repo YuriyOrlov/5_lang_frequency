@@ -3,8 +3,25 @@ import sys
 import textwrap
 import re
 from os import path
-from collections import Counter
-from nltk.corpus import stopwords
+import collections
+
+
+RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как',
+                          'а', 'то', 'все', 'она', 'так', 'его', 'но', 'да', 'ты', 'к', 'у',
+                          'же', 'вы', 'за', 'бы', 'по', 'только', 'ее', 'мне', 'было', 'вот',
+                          'от', 'меня', 'еще', 'нет', 'о', 'из', 'ему', 'теперь', 'когда', 'даже',
+                          'ну', 'вдруг', 'ли', 'если', 'уже', 'или', 'ни', 'быть', 'был', 'него',
+                          'до', 'вас', 'нибудь', 'опять', 'уж', 'вам', 'ведь', 'там', 'потом', 'себя',
+                          'ничего', 'ей', 'может', 'они', 'тут', 'где', 'есть', 'надо', 'ней', 'для',
+                          'мы', 'тебя', 'их', 'чем', 'была', 'сам', 'чтоб', 'без', 'будто', 'чего',
+                          'раз', 'тоже', 'себе', 'под', 'будет', 'ж', 'тогда', 'кто', 'этот', 'того',
+                          'потому', 'этого', 'какой', 'совсем', 'ним', 'здесь', 'этом', 'один', 'почти',
+                          'мой', 'тем', 'чтобы', 'нее', 'сейчас', 'были', 'куда', 'зачем', 'всех',
+                          'никогда', 'можно', 'при', 'наконец', 'два', 'об', 'другой', 'хоть', 'после',
+                          'над', 'больше', 'тот', 'через', 'эти', 'нас', 'про', 'всего', 'них', 'какая',
+                          'много', 'разве', 'три', 'эту', 'моя', 'впрочем', 'хорошо', 'свою', 'этой',
+                          'перед', 'иногда', 'лучше', 'чуть', 'том', 'нельзя', 'такой', 'им', 'более',
+                          'всегда', 'конечно', 'всю', 'между']
 
 
 class MyParser(argparse.ArgumentParser):
@@ -42,33 +59,6 @@ def create_parser():
     return parser
 
 
-def detect_language(language_rate_dict):
-    return max(language_rate_dict, key=language_rate_dict.get)
-
-
-def detect_language_stopwords(list_with_stopwords):
-    if stopwords.fileids():
-        languages_rate = dict()
-        for filenames in stopwords.fileids():
-            stopwords_set = set(stopwords.words(filenames))
-            words_set = set(list_with_stopwords)
-            common_elements = words_set.intersection(stopwords_set)
-            languages_rate[filenames] = len(common_elements)
-        return languages_rate
-    else:
-        return None
-
-
-def delete_stopwords(data):
-    lang_rate = detect_language_stopwords(data)
-    language = detect_language(lang_rate)
-    lang_stopwords = stopwords.words(language) if lang_rate and language else None
-    if lang_stopwords:
-        return [word for word in data if word not in lang_stopwords]
-    else:
-        return None
-
-
 def load_data(filepath):
     if not path.exists(filepath):
         return None
@@ -79,12 +69,12 @@ def load_data(filepath):
 def clean_text(text):
         words_and_numbers_list = re.findall('\w+', text.lower().strip())
         words_list = [word for word in words_and_numbers_list if not word.isdigit()]
-        words_list_without_stopwords = delete_stopwords(words_list)
-        return words_list_without_stopwords if words_list_without_stopwords else words_list
+        words_list_without_stopwords = [word for word in words_list if word not in RUSSIAN_STOPWORDS_LIST]
+        return words_list_without_stopwords
 
 
-def get_most_frequent_words(text, number_of_words_to_show=10):
-    return Counter(text).most_common(number_of_words_to_show)
+def get_most_frequent_words(text, number_of_words_to_show):
+    return collections.Counter(text).most_common(number_of_words_to_show)
 
 
 if __name__ == '__main__':
