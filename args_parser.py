@@ -23,9 +23,8 @@ class MyParser(argparse.ArgumentParser):
                           type=str, default=None)
         self.add_argument('--num_of_words',
                           help='How many words will be showed in result,\
-                              e.g --num_of_words 5 \
-                              (default: %(default)s)',
-                          type=int, default=10)
+                              e.g --num_of_words 5',
+                          type=int)
 
     def error(self, message):
         sys.stderr.write('error: {}\n'.format(message))
