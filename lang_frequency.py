@@ -41,9 +41,9 @@ def get_most_frequent_words(text, number_of_words_to_show):
 
 
 if __name__ == '__main__':
-    parser = MyParser()
-    parser.check_python_version()
-    args = parser.parse_args()
+    args_parser = MyParser()
+    args_parser.check_python_version()
+    args = args_parser.parse_args()
     loaded_text = load_data(args.file)
     cleaned_text = clean_text(loaded_text)
     most_common_words_list = get_most_frequent_words(cleaned_text, args.num_of_words)
