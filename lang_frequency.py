@@ -1,7 +1,7 @@
 import re
 from os import path
 import collections
-from args_parser import MyParser
+from args_parser import ConsoleArgsParser
 
 
 RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как',
@@ -41,7 +41,7 @@ def get_most_frequent_words(text, number_of_words_to_show):
 
 
 if __name__ == '__main__':
-    args_parser = MyParser()
+    args_parser = ConsoleArgsParser()
     args_parser.check_python_version()
     args = args_parser.parse_args()
     loaded_text = load_data(args.file)

@@ -3,10 +3,10 @@ import textwrap
 import sys
 
 
-class MyParser(argparse.ArgumentParser):
+class ConsoleArgsParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs):
-        super(MyParser, self).__init__(*args, **kwargs)
+        super(ConsoleArgsParser, self).__init__(*args, **kwargs)
         self.prog = 'Word Frequency counter'
         self.formatter_class = argparse.RawDescriptionHelpFormatter
         self.description = textwrap.dedent('''\
