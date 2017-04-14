@@ -3,6 +3,7 @@ from os import path
 import collections
 from args_parser import ConsoleArgsParser
 
+NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT = 10
 
 RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как',
                           'а', 'то', 'все', 'она', 'так', 'его', 'но', 'да', 'ты', 'к', 'у',
@@ -36,8 +37,8 @@ def clean_text(text):
         return words_list_without_stopwords
 
 
-def get_most_frequent_words(text, number_of_words_to_show):
-    return collections.Counter(text).most_common(number_of_words_to_show)
+def get_most_frequent_words(text, words_list_length):
+    return collections.Counter(text).most_common(words_list_length)
 
 
 if __name__ == '__main__':
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     args_parser.check_python_version()
     args = args_parser.parse_args()
     loaded_text = load_data(args.file)
-    words_list_length = args.num_of_words if args.num_of_words else 10
+    words_list_length = args.num_of_words if args.num_of_words else NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT
     cleaned_text = clean_text(loaded_text)
     most_common_words_list = get_most_frequent_words(cleaned_text, words_list_length)
     print('\nThe ten most frequent words in the text (in descending order)')
