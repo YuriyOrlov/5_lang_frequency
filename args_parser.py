@@ -30,8 +30,3 @@ class ConsoleArgsParser(argparse.ArgumentParser):
         sys.stderr.write('error: {}\n'.format(message))
         self.print_help()
         sys.exit(2)
-
-    def check_python_version(self):
-        if sys.version_info < (3, 5):
-            self.print_help()
-            raise SystemExit('\nSorry, this code needs Python 3.5 or higher\n')

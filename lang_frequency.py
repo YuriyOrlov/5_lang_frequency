@@ -38,17 +38,16 @@ def clean_text(text):
 
 
 def get_most_frequent_words(text, words_list_length):
+    words_list_length = args.num_of_words if args.num_of_words else words_list_length
     return collections.Counter(text).most_common(words_list_length)
 
 
 if __name__ == '__main__':
     args_parser = ConsoleArgsParser()
-    args_parser.check_python_version()
     args = args_parser.parse_args()
     loaded_text = load_data(args.file)
-    words_list_length = args.num_of_words if args.num_of_words else NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT
     cleaned_text = clean_text(loaded_text)
-    most_common_words_list = get_most_frequent_words(cleaned_text, words_list_length)
+    most_common_words_list = get_most_frequent_words(cleaned_text, NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT)
     print('\nThe ten most frequent words in the text (in descending order)')
     for num, item in enumerate(most_common_words_list, 1):
         print('{}. {}'.format(num, item[0]))
