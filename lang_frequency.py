@@ -3,7 +3,7 @@ from os import path
 import collections
 from args_parser import ConsoleArgsParser
 
-NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT = 10
+NUMBER_OF_WORDS_TO_SHOW_BY_DEFAULT = 123
 
 RUSSIAN_STOPWORDS_LIST = ['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как',
                           'а', 'то', 'все', 'она', 'так', 'его', 'но', 'да', 'ты', 'к', 'у',
